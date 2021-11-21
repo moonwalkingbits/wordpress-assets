@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4ab2e305902a6844571cd2e5746af55c",
+    "content-hash": "75ea885db1670c1c3f7c02e68439b60b",
     "packages": [
         {
             "name": "moonwalkingbits/wordpress-enum",
@@ -53,57 +53,6 @@
                 "source": "https://github.com/moonwalkingbits/wordpress-enum/tree/0.1.1"
             },
             "time": "2021-11-16T14:46:43+00:00"
-        },
-        {
-            "name": "moonwalkingbits/wordpress-templating",
-            "version": "0.1.4",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/moonwalkingbits/wordpress-templating.git",
-                "reference": "cae6dbd15eb98ded836b1adb1ad8100ce059fad8"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/moonwalkingbits/wordpress-templating/zipball/cae6dbd15eb98ded836b1adb1ad8100ce059fad8",
-                "reference": "cae6dbd15eb98ded836b1adb1ad8100ce059fad8",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=7.4"
-            },
-            "require-dev": {
-                "dealerdirect/phpcodesniffer-composer-installer": "^0.7.1",
-                "phan/phan": "^5.3",
-                "phpmd/phpmd": "^2.10",
-                "squizlabs/php_codesniffer": "^3.6",
-                "wp-coding-standards/wpcs": "^2.3"
-            },
-            "suggest": {
-                "moonwalkingbits/wordpress-templating-php": "A PHP-template implementation.",
-                "moonwalkingbits/wordpress-templating-twig": "A Twig implementation."
-            },
-            "type": "library",
-            "autoload": {
-                "classmap": [
-                    "src/"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "GPL-2.0-only"
-            ],
-            "authors": [
-                {
-                    "name": "Martin Pettersson",
-                    "email": "martin@moonwalkingbits.com"
-                }
-            ],
-            "description": "A general purpose templating abstraction.",
-            "support": {
-                "issues": "https://github.com/moonwalkingbits/wordpress-templating/issues",
-                "source": "https://github.com/moonwalkingbits/wordpress-templating/tree/0.1.4"
-            },
-            "time": "2021-11-20T18:26:50+00:00"
         }
     ],
     "packages-dev": [

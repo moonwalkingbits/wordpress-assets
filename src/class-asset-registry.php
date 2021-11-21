@@ -10,8 +10,6 @@
 
 namespace Moonwalking_Bits\Assets;
 
-use Moonwalking_Bits\Templating\Template_Engine_Interface;
-
 /**
  * An asset registry class.
  *
@@ -34,28 +32,15 @@ class Asset_Registry {
 	private string $assets_url;
 
 	/**
-	 * Template engine instance.
-	 *
-	 * @var \Moonwalking_Bits\Templating\Template_Engine_Interface
-	 */
-	private Template_Engine_Interface $template_engine;
-
-	/**
 	 * Creates a new asset registry instance.
 	 *
 	 * @since 0.1.0
-	 * @param string                                                 $assets_directory Asset root directory.
-	 * @param string                                                 $assets_url Asset root URL.
-	 * @param \Moonwalking_Bits\Templating\Template_Engine_Interface $template_engine Template engine instance.
+	 * @param string $assets_directory Asset root directory.
+	 * @param string $assets_url Asset root URL.
 	 */
-	public function __construct(
-		string $assets_directory,
-		string $assets_url,
-		Template_Engine_Interface $template_engine
-	) {
+	public function __construct( string $assets_directory, string $assets_url ) {
 		$this->assets_directory = rtrim( $assets_directory, '/' );
 		$this->assets_url       = rtrim( $assets_url, '/' );
-		$this->template_engine  = $template_engine;
 	}
 
 	/**
@@ -194,8 +179,7 @@ class Asset_Registry {
 			);
 		}
 
-		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-		echo $this->template_engine->render( 'assets/preload-link', compact( 'href', 'type' ) );
+		printf( '<link rel="preload" href="%s" as="%s">', esc_attr( $href ), esc_attr( $type ) );
 	}
 
 	/**

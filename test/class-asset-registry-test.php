@@ -2,7 +2,6 @@
 
 namespace Moonwalking_Bits\Assets;
 
-use Moonwalking_Bits\Templating\Template_Engine_Interface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use phpmock\phpunit\PHPMock;
@@ -13,7 +12,6 @@ class Asset_Registry_Test extends TestCase {
 
 	private string $assets_directory;
 	private string $assets_url;
-	private MockObject $template_engine_mock;
 	private Asset_Registry $assets;
 	private MockObject $add_action_mock;
 	private MockObject $add_filter_mock;
@@ -21,6 +19,7 @@ class Asset_Registry_Test extends TestCase {
 	private MockObject $add_query_arg_mock;
 	private MockObject $wp_enqueue_style_mock;
 	private MockObject $wp_enqueue_script_mock;
+	private MockObject $esc_attr_mock;
 
 	/**
 	 * @before
@@ -28,18 +27,14 @@ class Asset_Registry_Test extends TestCase {
 	public function set_up(): void {
 		$this->assets_directory       = __DIR__ . '/fixtures/assets/';
 		$this->assets_url             = 'http://example.com/assets';
-		$this->template_engine_mock   = $this->getMockBuilder( Template_Engine_Interface::class )->getMock();
-		$this->assets                 = new Asset_Registry(
-			$this->assets_directory,
-			$this->assets_url,
-			$this->template_engine_mock
-		);
+		$this->assets                 = new Asset_Registry( $this->assets_directory, $this->assets_url );
 		$this->add_action_mock        = $this->getFunctionMock( __NAMESPACE__, 'add_action' );
 		$this->add_filter_mock        = $this->getFunctionMock( __NAMESPACE__, 'add_filter' );
 		$this->apply_filters_mock     = $this->getFunctionMock( __NAMESPACE__, 'apply_filters' );
 		$this->add_query_arg_mock     = $this->getFunctionMock( __NAMESPACE__, 'add_query_arg' );
 		$this->wp_enqueue_style_mock  = $this->getFunctionMock( __NAMESPACE__, 'wp_enqueue_style' );
 		$this->wp_enqueue_script_mock = $this->getFunctionMock( __NAMESPACE__, 'wp_enqueue_script' );
+		$this->esc_attr_mock          = $this->getFunctionMock( __NAMESPACE__, 'esc_attr' );
 	}
 
 	/**
@@ -84,6 +79,8 @@ class Asset_Registry_Test extends TestCase {
 			->disableOriginalConstructor()
 			->getMock();
 
+		$this->expectOutputString( '<link rel="preload" href="' . $url . '" as="style">' );
+
 		$asset_mock->method( 'handle' )->will( $this->returnValue( $handle ) );
 		$asset_mock->method( 'url' )->will( $this->returnValue( $url ) );
 		$asset_mock->method( 'dependencies' )->will( $this->returnValue( $dependencies ) );
@@ -105,11 +102,9 @@ class Asset_Registry_Test extends TestCase {
 			->will( $this->returnCallback( fn( string $action, callable $callable ) => $callable() ) );
 		$this->wp_enqueue_style_mock->expects( $this->once() )
 			->with( $handle, $url, $dependencies, $version, $media_type->value() );
-		$this->template_engine_mock->expects( $this->once() )
-			->method( 'render' )
-			->with( 'assets/preload-link' );
 		$this->apply_filters_mock->expects( $this->any() )->will( $this->returnValue( $url ) );
 		$this->add_query_arg_mock->expects( $this->any() )->will( $this->returnValue( $url ) );
+		$this->esc_attr_mock->expects( $this->any() )->will( $this->returnCallback( fn( $value ) => $value ) );
 
 		$this->assets->register( $asset_mock );
 	}
@@ -156,6 +151,8 @@ class Asset_Registry_Test extends TestCase {
 			->disableOriginalConstructor()
 			->getMock();
 
+		$this->expectOutputString( '<link rel="preload" href="' . $url . '" as="script">' );
+
 		$asset_mock->method( 'handle' )->will( $this->returnValue( $handle ) );
 		$asset_mock->method( 'url' )->will( $this->returnValue( $url ) );
 		$asset_mock->method( 'dependencies' )->will( $this->returnValue( $dependencies ) );
@@ -189,11 +186,9 @@ class Asset_Registry_Test extends TestCase {
 			);
 		$this->wp_enqueue_script_mock->expects( $this->once() )
 			->with( $handle, $url, $dependencies, $version, true );
-		$this->template_engine_mock->expects( $this->once() )
-			->method( 'render' )
-			->with( 'assets/preload-link' );
 		$this->apply_filters_mock->expects( $this->any() )->will( $this->returnValue( $url ) );
 		$this->add_query_arg_mock->expects( $this->any() )->will( $this->returnValue( $url ) );
+		$this->esc_attr_mock->expects( $this->any() )->will( $this->returnCallback( fn( $value ) => $value ) );
 
 		$this->assets->register( $asset_mock );
 	}
