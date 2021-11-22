@@ -354,7 +354,6 @@ return array(
 		'src/',
 		'vendor/johnpbloch/wordpress-core/',
 		'vendor/moonwalkingbits/wordpress-enum/',
-		'vendor/moonwalkingbits/wordpress-templating/',
 	),
 
 	// A list of individual files to include in analysis
