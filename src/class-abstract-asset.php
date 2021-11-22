@@ -2,7 +2,7 @@
 /**
  * Assets: Abstract asset class
  *
- * @package Moonwalking_Bits\Asets
+ * @package Moonwalking_Bits\Assets
  * @author Martin Pettersson
  * @license GPL-2.0
  * @since 0.1.0
