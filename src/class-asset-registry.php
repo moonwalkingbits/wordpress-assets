@@ -179,7 +179,7 @@ class Asset_Registry {
 			);
 		}
 
-		printf( '<link rel="preload" href="%s" as="%s">', esc_attr( $href ), esc_attr( $type ) );
+		printf( '<link rel="preload" href="%s" as="%s">%s', esc_attr( $href ), esc_attr( $type ), PHP_EOL );
 	}
 
 	/**
