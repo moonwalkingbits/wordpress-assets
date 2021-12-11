@@ -85,11 +85,7 @@ class Asset_Registry implements IteratorAggregate {
 			$type = Asset_Type::from( $type );
 		}
 
-		$asset = $this->create_asset(
-			$type instanceof Asset_Type ? $type : Asset_Type::from( $type ),
-			$handle,
-			$name
-		);
+		$asset = $this->create_asset( $type, $handle, $name );
 
 		$this->register( $asset );
 
