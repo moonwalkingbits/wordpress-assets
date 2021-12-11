@@ -79,7 +79,7 @@ class Asset_Registry_Test extends TestCase {
 			->disableOriginalConstructor()
 			->getMock();
 
-		$this->expectOutputString( '<link rel="preload" href="' . $url . '" as="style">' );
+		$this->expectOutputString( '<link rel="preload" href="' . $url . '" as="style">' . PHP_EOL );
 
 		$asset_mock->method( 'handle' )->will( $this->returnValue( $handle ) );
 		$asset_mock->method( 'url' )->will( $this->returnValue( $url ) );
@@ -151,7 +151,7 @@ class Asset_Registry_Test extends TestCase {
 			->disableOriginalConstructor()
 			->getMock();
 
-		$this->expectOutputString( '<link rel="preload" href="' . $url . '" as="script">' );
+		$this->expectOutputString( '<link rel="preload" href="' . $url . '" as="script">' . PHP_EOL );
 
 		$asset_mock->method( 'handle' )->will( $this->returnValue( $handle ) );
 		$asset_mock->method( 'url' )->will( $this->returnValue( $url ) );
@@ -217,5 +217,19 @@ class Asset_Registry_Test extends TestCase {
 			->with( 'script', "{$this->assets_url}/script.js", array( 'one' ), 'version', true );
 
 		$this->assets->register_asset( Asset_Type::SCRIPT, 'script', 'script' );
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_be_iterable(): void {
+		$asset_mock = $this->getMockBuilder( Script::class )
+			->disableOriginalConstructor()
+			->getMock();
+
+		$this->assets->register( $asset_mock );
+
+		$this->assertEquals( 1, count( $this->assets->getIterator() ) );
+		$this->assertSame( $asset_mock, $this->assets->getIterator()[0] );
 	}
 }

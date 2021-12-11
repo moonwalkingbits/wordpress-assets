@@ -10,12 +10,17 @@
 
 namespace Moonwalking_Bits\Assets;
 
+use ArrayIterator;
+use IteratorAggregate;
+use Traversable;
+
 /**
  * An asset registry class.
  *
  * @since 0.1.0
+ * @see \IteratorAggregate
  */
-class Asset_Registry {
+class Asset_Registry implements IteratorAggregate {
 
 	/**
 	 * Asset root directory.
@@ -32,6 +37,13 @@ class Asset_Registry {
 	private string $assets_url;
 
 	/**
+	 * Registered assets.
+	 *
+	 * @var \Moonwalking_Bits\Assets\Abstract_Asset[]
+	 */
+	private array $assets;
+
+	/**
 	 * Creates a new asset registry instance.
 	 *
 	 * @since 0.1.0
@@ -41,6 +53,7 @@ class Asset_Registry {
 	public function __construct( string $assets_directory, string $assets_url ) {
 		$this->assets_directory = rtrim( $assets_directory, '/' );
 		$this->assets_url       = rtrim( $assets_url, '/' );
+		$this->assets           = array();
 	}
 
 	/**
@@ -51,6 +64,8 @@ class Asset_Registry {
 	 */
 	public function register( Abstract_Asset $asset ): void {
 		add_action( 'wp_enqueue_scripts', fn() => $this->enqueue_asset( $asset ) );
+
+		$this->assets[] = $asset;
 	}
 
 	/**
@@ -196,5 +211,14 @@ class Asset_Registry {
 		}
 
 		return str_replace( '><', ' defer><', $tag );
+	}
+
+	/**
+	 * Returns a traversable object of all registered assets.
+	 *
+	 * @return \Traversable Traversable object of all registered assets.
+	 */
+	public function getIterator(): Traversable {
+		return new ArrayIterator( $this->assets );
 	}
 }
