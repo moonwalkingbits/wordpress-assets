@@ -20,6 +20,6 @@ use Moonwalking_Bits\Enum\Abstract_Enum;
  */
 class Asset_Type extends Abstract_Enum {
 
-	const STYLE  = 'style';
-	const SCRIPT = 'script';
+	const STYLE  = 'STYLE';
+	const SCRIPT = 'SCRIPT';
 }
