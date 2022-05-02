@@ -36,5 +36,10 @@
 		"johnpbloch/wordpress-core": "^5.8",
 		"phpunit/phpunit": "^9.5",
 		"php-mock/php-mock-phpunit": "^2.6"
+	},
+	"config": {
+		"allow-plugins": {
+			"dealerdirect/phpcodesniffer-composer-installer": true
+		}
 	}
 }

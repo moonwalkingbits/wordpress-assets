@@ -40,7 +40,7 @@ class Asset_Registry_Test extends TestCase {
 	/**
 	 * @test
 	 */
-	public function should_enqueue_style_asset_when_registered(): void {
+	public function should_enqueue_registered_style_assets(): void {
 		$handle       = 'handle';
 		$url          = 'url';
 		$dependencies = array( 'one' );
@@ -57,13 +57,11 @@ class Asset_Registry_Test extends TestCase {
 		$asset_mock->method( 'media_type' )->will( $this->returnValue( $media_type ) );
 		$asset_mock->method( 'should_be_preloaded' )->will( $this->returnValue( false ) );
 
-		$this->add_action_mock->expects( $this->once() )
-			->with( 'wp_enqueue_scripts', $this->isType( 'callable' ) )
-			->will( $this->returnCallback( fn( string $action, callable $callable ) => $callable() ) );
 		$this->wp_enqueue_style_mock->expects( $this->once() )
 			->with( $handle, $url, $dependencies, $version, $media_type->value() );
 
 		$this->assets->register( $asset_mock );
+		$this->assets->enqueue_assets();
 	}
 
 	/**
@@ -88,17 +86,8 @@ class Asset_Registry_Test extends TestCase {
 		$asset_mock->method( 'media_type' )->will( $this->returnValue( $media_type ) );
 		$asset_mock->method( 'should_be_preloaded' )->will( $this->returnValue( true ) );
 
-		$this->add_action_mock->expects( $this->exactly( 2 ) )
-			->withConsecutive(
-				array(
-					'wp_enqueue_scripts',
-					$this->isType( 'callable' ),
-				),
-				array(
-					'wp_head',
-					$this->isType( 'callable' ),
-				),
-			)
+		$this->add_action_mock->expects( $this->once() )
+			->with( 'wp_head', $this->isType( 'callable' ) )
 			->will( $this->returnCallback( fn( string $action, callable $callable ) => $callable() ) );
 		$this->wp_enqueue_style_mock->expects( $this->once() )
 			->with( $handle, $url, $dependencies, $version, $media_type->value() );
@@ -107,12 +96,13 @@ class Asset_Registry_Test extends TestCase {
 		$this->esc_attr_mock->expects( $this->any() )->will( $this->returnCallback( fn( $value ) => $value ) );
 
 		$this->assets->register( $asset_mock );
+		$this->assets->enqueue_assets();
 	}
 
 	/**
 	 * @test
 	 */
-	public function should_enqueue_script_asset_when_registered(): void {
+	public function should_enqueue_registered_script_assets(): void {
 		$handle          = 'handle';
 		$url             = 'url';
 		$dependencies    = array( 'one' );
@@ -129,13 +119,11 @@ class Asset_Registry_Test extends TestCase {
 		$asset_mock->method( 'target_location' )->will( $this->returnValue( $target_location ) );
 		$asset_mock->method( 'should_be_preloaded' )->will( $this->returnValue( false ) );
 
-		$this->add_action_mock->expects( $this->once() )
-			->with( 'wp_enqueue_scripts', $this->isType( 'callable' ) )
-			->will( $this->returnCallback( fn( string $action, callable $callable ) => $callable() ) );
 		$this->wp_enqueue_script_mock->expects( $this->once() )
 			->with( $handle, $url, $dependencies, $version, true );
 
 		$this->assets->register( $asset_mock );
+		$this->assets->enqueue_assets();
 	}
 
 	/**
@@ -160,17 +148,8 @@ class Asset_Registry_Test extends TestCase {
 		$asset_mock->method( 'target_location' )->will( $this->returnValue( $target_location ) );
 		$asset_mock->method( 'should_be_preloaded' )->will( $this->returnValue( true ) );
 
-		$this->add_action_mock->expects( $this->exactly( 2 ) )
-			->withConsecutive(
-				array(
-					'wp_enqueue_scripts',
-					$this->isType( 'callable' ),
-				),
-				array(
-					'wp_head',
-					$this->isType( 'callable' ),
-				),
-			)
+		$this->add_action_mock->expects( $this->once() )
+			->with( 'wp_head', $this->isType( 'callable' ) )
 			->will( $this->returnCallback( fn( string $hook, callable $callable ) => $callable() ) );
 		$this->add_filter_mock->expects( $this->once() )
 			->with(
@@ -191,32 +170,29 @@ class Asset_Registry_Test extends TestCase {
 		$this->esc_attr_mock->expects( $this->any() )->will( $this->returnCallback( fn( $value ) => $value ) );
 
 		$this->assets->register( $asset_mock );
+		$this->assets->enqueue_assets();
 	}
 
 	/**
 	 * @test
 	 */
 	public function should_register_style_from_asset_file(): void {
-		$this->add_action_mock->expects( $this->once() )
-			->with( 'wp_enqueue_scripts', $this->isType( 'callable' ) )
-			->will( $this->returnCallback( fn( string $action, callable $callable ) => $callable() ) );
 		$this->wp_enqueue_style_mock->expects( $this->once() )
 			->with( 'style', "{$this->assets_url}/style.scss.css", array(), 'version', 'all' );
 
 		$this->assets->register_asset( Asset_Type::STYLE, 'style', 'style.scss' );
+		$this->assets->enqueue_assets();
 	}
 
 	/**
 	 * @test
 	 */
 	public function should_register_script_from_asset_file(): void {
-		$this->add_action_mock->expects( $this->once() )
-			->with( 'wp_enqueue_scripts', $this->isType( 'callable' ) )
-			->will( $this->returnCallback( fn( string $action, callable $callable ) => $callable() ) );
 		$this->wp_enqueue_script_mock->expects( $this->once() )
 			->with( 'script', "{$this->assets_url}/script.js", array( 'one' ), 'version', true );
 
 		$this->assets->register_asset( Asset_Type::SCRIPT, 'script', 'script' );
+		$this->assets->enqueue_assets();
 	}
 
 	/**
