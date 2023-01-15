@@ -1,0 +1,24 @@
+#!/usr/bin/env sh
+
+set -e
+
+print_help_message() {
+  echo "Usage: $(basename "${0}") command [arguments ...]"
+}
+
+if [ -z "${1}" ]
+then
+  print_help_message
+
+  exit 1
+fi
+
+case "${1}" in
+  "--help" | "-h")
+    print_help_message
+
+    exit
+    ;;
+esac
+
+docker run --rm -it -v "$(pwd):/opt/wordpress-assets" -w /opt/wordpress-assets "$(docker build -q .)" "${@}"
