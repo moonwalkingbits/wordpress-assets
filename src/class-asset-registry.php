@@ -2,10 +2,10 @@
 /**
  * Assets: Asset registry class
  *
- * @package Moonwalking_Bits\Assets
+ * @since 0.1.0
  * @author Martin Pettersson
  * @license GPL-2.0
- * @since 0.1.0
+ * @package Moonwalking_Bits\Assets
  */
 
 namespace Moonwalking_Bits\Assets;
@@ -46,6 +46,7 @@ class Asset_Registry implements Asset_Registry_Interface {
 	 * Creates a new asset registry instance.
 	 *
 	 * @since 0.1.0
+	 *
 	 * @param string $assets_directory Asset root directory.
 	 * @param string $assets_url Asset root URL.
 	 */
@@ -59,6 +60,7 @@ class Asset_Registry implements Asset_Registry_Interface {
 	 * Registers a given asset.
 	 *
 	 * @since 0.1.0
+	 *
 	 * @param \Moonwalking_Bits\Assets\Abstract_Asset $asset Asset instance.
 	 */
 	public function register( Abstract_Asset $asset ): void {
@@ -72,9 +74,11 @@ class Asset_Registry implements Asset_Registry_Interface {
 	 * and register an asset.
 	 *
 	 * @since 0.1.0
+	 *
 	 * @param \Moonwalking_Bits\Assets\Asset_Type|string $type Asset type.
 	 * @param string                                     $handle Asset unique identifier.
 	 * @param string                                     $name Asset name.
+	 *
 	 * @return \Moonwalking_Bits\Assets\Abstract_Asset Registered asset instance.
 	 */
 	public function register_asset( $type, string $handle, string $name ): Abstract_Asset {
@@ -104,6 +108,7 @@ class Asset_Registry implements Asset_Registry_Interface {
 	 * @param \Moonwalking_Bits\Assets\Asset_Type $type Asset type.
 	 * @param string                              $handle Asset unique identifier.
 	 * @param string                              $name Asset name.
+	 *
 	 * @return \Moonwalking_Bits\Assets\Abstract_Asset Asset instance.
 	 */
 	private function create_asset( Asset_Type $type, string $handle, string $name ): Abstract_Asset {
@@ -119,6 +124,7 @@ class Asset_Registry implements Asset_Registry_Interface {
 	 *
 	 * @param string $handle Asset unique identifier.
 	 * @param string $name Asset name.
+	 *
 	 * @return \Moonwalking_Bits\Assets\Style Style asset instance.
 	 */
 	private function create_style_asset( string $handle, string $name ): Style {
@@ -132,13 +138,14 @@ class Asset_Registry implements Asset_Registry_Interface {
 	 *
 	 * @param string $handle Asset unique identifier.
 	 * @param string $name Asset name.
+	 *
 	 * @return \Moonwalking_Bits\Assets\Script Script asset instance.
 	 */
 	private function create_script_asset( string $handle, string $name ): Script {
 		list(
 			'dependencies' => $dependencies,
 			'version' => $version
-		) = require "{$this->assets_directory}/{$name}.asset.php";
+			) = require "{$this->assets_directory}/{$name}.asset.php";
 
 		return new Script( $handle, "{$this->assets_url}/{$name}.js", $version, $dependencies );
 	}
@@ -160,13 +167,19 @@ class Asset_Registry implements Asset_Registry_Interface {
 		}
 
 		if ( $asset instanceof Script ) {
-			wp_enqueue_script(
+			wp_register_script(
 				$asset->handle(),
 				$asset->url(),
 				$asset->dependencies(),
 				$asset->version(),
 				$asset->target_location()->value() === Target_Location::FOOTER
 			);
+
+			foreach ( $asset->translations() as $translation ) {
+				wp_set_script_translations( $asset->handle(), $translation->domain(), (string) $translation->path() );
+			}
+
+			wp_enqueue_script( $asset->handle() );
 		}
 
 		if ( $asset->should_be_preloaded() ) {
@@ -205,6 +218,7 @@ class Asset_Registry implements Asset_Registry_Interface {
 	 * @param \Moonwalking_Bits\Assets\Script $script Script asset instance.
 	 * @param string                          $tag Script HTML element.
 	 * @param string                          $handle Unique identifier.
+	 *
 	 * @return string Script HTML element.
 	 */
 	private function defer_script( Script $script, string $tag, string $handle ): string {

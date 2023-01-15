@@ -1,6 +1,6 @@
 <?php
 
 return array(
-	'version' => 'version',
+	'version'      => 'version',
 	'dependencies' => array( 'one' ),
 );

@@ -9,12 +9,12 @@ class Style_Test extends TestCase {
 	 * @test
 	 */
 	public function should_initialize_all_properties(): void {
-		$handle = 'handle';
-		$url = 'url';
-		$version = 'version';
+		$handle       = 'handle';
+		$url          = 'url';
+		$version      = 'version';
 		$dependencies = array( 'one' );
-		$media_type = Media_Type::from( 'all' );
-		$style = new Style( $handle, $url, $version, $dependencies, $media_type );
+		$media_type   = Media_Type::from( 'all' );
+		$style        = new Style( $handle, $url, $version, $dependencies, $media_type );
 
 		$this->assertEquals( $handle, $style->handle() );
 		$this->assertEquals( $url, $style->url() );
