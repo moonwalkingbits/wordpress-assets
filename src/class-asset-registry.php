@@ -94,6 +94,43 @@ class Asset_Registry implements Asset_Registry_Interface {
 	}
 
 	/**
+	 * Deregisters a given asset.
+	 *
+	 * @since 0.4.0
+	 * @param \Moonwalking_Bits\Assets\Abstract_Asset $asset Asset instance.
+	 */
+	public function deregister( Abstract_Asset $asset ): void {
+		$index = array_search( $asset, $this->assets, true );
+
+		if ( false === $index ) {
+			return;
+		}
+
+		array_splice( $this->assets, $index, 1 );
+	}
+
+	/**
+	 * Deregisters an asset by the given parameters.
+	 *
+	 * @since 0.4.0
+	 * @param \Moonwalking_Bits\Assets\Asset_Type|string $type Asset type.
+	 * @param string                                     $handle Asset unique identifier.
+	 */
+	public function deregister_asset( $type, string $handle ): void {
+		if ( ! $type instanceof Asset_Type ) {
+			$type = Asset_Type::from( $type );
+		}
+
+		foreach ( $this->assets as $index => $asset ) {
+			if ( $asset::TYPE === $type->value() && $asset->handle() === $handle ) {
+				array_splice( $this->assets, $index, 1 );
+
+				break;
+			}
+		}
+	}
+
+	/**
 	 * Enqueues the registered assets.
 	 */
 	public function enqueue_assets(): void {

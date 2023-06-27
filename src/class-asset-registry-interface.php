@@ -43,6 +43,23 @@ interface Asset_Registry_Interface extends IteratorAggregate {
 	public function register_asset( $type, string $handle, string $name ): Abstract_Asset;
 
 	/**
+	 * Deregisters a given asset.
+	 *
+	 * @since 0.4.0
+	 * @param \Moonwalking_Bits\Assets\Abstract_Asset $asset Asset instance.
+	 */
+	public function deregister( Abstract_Asset $asset ): void;
+
+	/**
+	 * Deregisters an asset by the given parameters.
+	 *
+	 * @since 0.4.0
+	 * @param \Moonwalking_Bits\Assets\Asset_Type|string $type Asset type.
+	 * @param string                                     $handle Asset unique identifier.
+	 */
+	public function deregister_asset( $type, string $handle ): void;
+
+	/**
 	 * Enqueues the registered assets.
 	 */
 	public function enqueue_assets(): void;

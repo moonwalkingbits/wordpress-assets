@@ -248,4 +248,66 @@ class Asset_Registry_Test extends TestCase {
 		$this->assertEquals( 1, count( $this->assets->getIterator() ) );
 		$this->assertSame( $asset_mock, $this->assets->getIterator()[0] );
 	}
+
+	/**
+	 * @test
+	 */
+	public function should_remove_registered_asset(): void {
+		$script_mock = $this->getMockBuilder( Script::class )
+		                    ->disableOriginalConstructor()
+		                    ->getMock();
+		$style_mock  = $this->getMockBuilder( Style::class )
+		                    ->disableOriginalConstructor()
+		                    ->getMock();
+
+		$this->assets->register( $script_mock );
+		$this->assets->register( $style_mock );
+
+		$this->assets->deregister( $script_mock );
+
+		$this->assertEquals( 1, count( $this->assets->getIterator() ) );
+		$this->assertSame( $style_mock, $this->assets->getIterator()[0] );
+
+		$this->assets->deregister( $style_mock );
+
+		$this->assertEmpty( $this->assets->getIterator() );
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_remove_registered_asset_by_parameters(): void {
+		$script_mock = $this->getMockBuilder( Script::class )
+		                    ->disableOriginalConstructor()
+		                    ->getMock();
+		$style_mock  = $this->getMockBuilder( Style::class )
+		                    ->disableOriginalConstructor()
+		                    ->getMock();
+
+		$script_mock->method( 'handle' )->will( $this->returnValue( 'script' ) );
+		$style_mock->method( 'handle' )->will( $this->returnValue( 'style' ) );
+
+		$this->assets->register( $script_mock );
+		$this->assets->register( $style_mock );
+
+		$this->assets->deregister_asset( Asset_Type::SCRIPT, 'script' );
+
+		$this->assertEquals( 1, count( $this->assets->getIterator() ) );
+		$this->assertSame( $style_mock, $this->assets->getIterator()[0] );
+
+		$this->assets->deregister_asset( Asset_Type::STYLE, 'style' );
+
+		$this->assertEmpty( $this->assets->getIterator() );
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_not_throw_exception_if_asset_is_not_found_when_deregistering(): void {
+		$this->assets->deregister(
+			$this->getMockBuilder( Script::class )
+			     ->disableOriginalConstructor()
+			     ->getMock()
+		);
+	}
 }
