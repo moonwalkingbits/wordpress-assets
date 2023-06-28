@@ -165,7 +165,7 @@ class Asset_Registry implements Asset_Registry_Interface {
 	 * @return \Moonwalking_Bits\Assets\Style Style asset instance.
 	 */
 	private function create_style_asset( string $handle, string $name ): Style {
-		list( 'version' => $version ) = require "{$this->assets_directory}/{$name}.asset.php";
+		list( 'version' => $version ) = require "{$this->assets_directory}/{$name}.css.asset.php";
 
 		return new Style( $handle, "{$this->assets_url}/{$name}.css", $version, array() );
 	}

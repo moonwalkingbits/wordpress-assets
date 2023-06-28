@@ -217,9 +217,9 @@ class Asset_Registry_Test extends TestCase {
 	 */
 	public function should_register_style_from_asset_file(): void {
 		$this->wp_enqueue_style_mock->expects( $this->once() )
-		                            ->with( 'style', "{$this->assets_url}/style.scss.css", array(), 'version', 'all' );
+		                            ->with( 'style', "{$this->assets_url}/style.css", array(), 'version', 'all' );
 
-		$this->assets->register_asset( Asset_Type::STYLE, 'style', 'style.scss' );
+		$this->assets->register_asset( Asset_Type::STYLE, 'style', 'style' );
 		$this->assets->enqueue_assets();
 	}
 
